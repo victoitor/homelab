@@ -11,12 +11,12 @@ Para configurar um servidor usando ansible, primeiro é necessário instalar o U
 A primeira execução deve ocorrer com o comando seguinte, onde deve ser fornecido a senha do usuário `victoitor`.
 
 ```bash
-$ ansible-playbook playbooks/bootstrap_homelab.yml --ask-become-pass
+ansible-playbook playbooks/bootstrap_homelab.yml --ask-become-pass
 ```
 
 Para as execuções posteriores, é necessário trocar a variável `ansible_host` para o mesmo valor que `target_ip` no arquivo `hosts/homelab.yml`.
 As execuções posteriores podem ser feitas com o seguinte comando.
 
 ```bash
-$ ansible-playbook playbooks/bootstrap_homelab.yml
+ansible-playbook playbooks/bootstrap_homelab.yml
 ```
