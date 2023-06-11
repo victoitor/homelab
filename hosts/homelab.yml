@@ -1,0 +1,11 @@
+homelab:
+  children:
+    server:
+      hosts:
+        bee-server:
+          ansible_host: 10.0.0.4
+          target_ip: 10.0.0.4
+          interface: enp2s0
+  vars:
+    ansible_user: victoitor
+    ansible_ssh_private_key_file: ~/MEGA/ssh-keys/ansible

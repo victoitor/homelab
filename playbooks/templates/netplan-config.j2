@@ -10,13 +10,11 @@ network:
       interfaces:
         - {{ interface }}
       addresses:
-        - {{target_ip}}/22
+        - {{target_ip}}/24
       nameservers:
         addresses:
-          - 200.19.177.65
-          - 200.19.190.1
-        search:
-          - "ufc.br"
+          - 10.0.0.1
+        search: []
       routes:
         - to: default
-          via: 10.11.12.1
+          via: 10.0.0.1
