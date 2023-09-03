@@ -1,0 +1,46 @@
+config:
+  core.https_address: '[::]:8443'
+storage_pools:
+- config:
+    source: /var/snap/lxd/common/lxd/storage-pools/local
+  description: Local btrfs storage
+  name: local
+  driver: btrfs
+profiles:
+- config:
+    cloud-init.vendor-data: |-
+      #cloud-config
+      timezone: America/Fortaleza
+    limits.cpu.allowance: 100%
+    limits.memory: 2GiB
+  description: Default LXD profile
+  devices:
+    eth0:
+      name: eth0
+      nictype: bridged
+      parent: br0
+      type: nic
+    root:
+      path: /
+      pool: local
+      type: disk
+  name: default
+- config:
+    boot.autostart: "true"
+    security.nesting: "true"
+  description: Additional docker profile
+  name: docker
+- config:
+    boot.autostart: "true"
+    cloud-init.user-data: |-
+      #cloud-config
+      packages:
+        - intel-opencl-icd
+        - intel-media-va-driver-non-free
+    limits.cpu.allowance: 400%
+  description: Additional jellyfin profile
+  devices:
+    gpu:
+      gputype: physical
+      type: gpu
+  name: jellyfin

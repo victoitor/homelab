@@ -1,0 +1,42 @@
+---
+
+- hosts: homelab
+  become: true
+
+  tasks:
+  - name: Ensure snapd is installed
+    apt:
+      name: 
+      - snapd
+
+  - name: Ensure sudoers secure_path to include /snap/bin
+    copy:
+      src: secure-path
+      dest: /etc/sudoers.d/secure-path
+      owner: root
+      group: root
+      mode: 0440
+
+  - name: Configure snap refresh timer
+    command: "snap set system refresh.timer=1:00-4:00"
+    changed_when: false
+
+  - name: Ensure lxd is installed
+    snap:
+      name: lxd
+
+  - name: "Ensure {{ ansible_user }} is in group lxd"
+    user:
+      name: '{{ ansible_user }}'
+      groups: lxd
+      append: yes
+
+  - name: Define lxd preseed file
+    copy:
+      src: lxd-preeseed-unclustered.yml
+      dest: /tmp/lxd-preeseed-unclustered.yml
+      mode: 0644
+
+  - name: Configure lxd
+    shell: lxd init --preseed < /tmp/lxd-preeseed-unclustered.yml
+    changed_when: false

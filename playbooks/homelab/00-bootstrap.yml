@@ -1,0 +1,80 @@
+---
+
+- hosts: homelab
+  become: true
+
+  tasks:
+  - name: "Sync authorized keys for user {{  ansible_user  }} with github"
+    authorized_key:
+      user: "{{  ansible_user  }}"
+      state: present
+      key: "https://github.com/{{  ansible_user  }}.keys"
+
+  - name: Harden ssh server
+    copy:
+      src: default-ssh.conf
+      dest: /etc/ssh/sshd_config.d/default-profile.conf
+      owner: root
+      group: root
+      mode: 0644
+    notify: sshd restart
+
+  - name: "Ensure {{  ansible_user  }} is sudoer with NOPASS: ALL"
+    template:
+      src: sudoers.j2
+      dest: "/etc/sudoers.d/{{  ansible_user  }}"
+      owner: root
+      group: root
+      mode: 0440
+
+  - name: Configure timezone
+    timezone: name=America/Fortaleza
+
+  - name: Configure hostname
+    hostname: 
+      name: "{{ inventory_hostname }}"
+
+  - name: Ensure bridge-utils and unattended-upgrades are installed
+    apt:
+      name: 
+      - bridge-utils
+      - unattended-upgrades
+      update_cache: yes
+
+  - name: Configure unattended-upgrades
+    copy:
+      src: 20auto-upgrades
+      dest: /etc/apt/apt.conf.d/20auto-upgrades
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Configure bridge br0
+    template: 
+      src: br0.j2
+      dest: /etc/network/interfaces.d/br0
+      owner: root
+      group: root
+      mode: 0644
+    notify: Reboot
+
+  - name: Configure interfaces
+    copy:
+      src: interfaces
+      dest: /etc/network/interfaces
+      backup: true
+      owner: root
+      group: root
+      mode: 0644
+    notify: Reboot
+
+  handlers:
+  - name: Reboot
+    reboot:
+
+  - name: sshd restart
+    service:
+      name: sshd
+      state: restarted
+
+

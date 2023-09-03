@@ -1,0 +1,32 @@
+---
+
+- hosts: homelab
+  become: true
+
+  tasks:
+  - name: Ensure /etc/systemd/timesyncd.conf.d exists
+    file:
+      path: /etc/systemd/timesyncd.conf.d
+      state: directory
+      mode: '0755'
+
+  - name: Add ntp synchronization
+    copy:
+      src: ntpbr.conf
+      dest: /etc/systemd/timesyncd.conf.d/ntpbr.conf
+      owner: root
+      group: root
+      mode: 0644
+    notify: Restart systemd-timesyncd
+
+  - name: Start and enable systemd-timesyncd
+    service:
+      name: systemd-timesyncd.service
+      enabled: yes
+      state: started
+
+  handlers:
+  - name: Restart systemd-timesyncd
+    ansible.builtin.service:
+      name: systemd-timesyncd
+      state: restarted
