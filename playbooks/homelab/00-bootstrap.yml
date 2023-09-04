@@ -68,6 +68,13 @@
       mode: 0644
     notify: Reboot
 
+  - name: onfigure GRUB_TIMEOUT
+    lineinfile:
+      path: /etc/default/grub
+      regexp: '^GRUB_TIMEOUT='
+      line: GRUB_TIMEOUT=0
+    notify: Run update-grub
+
   handlers:
   - name: Reboot
     reboot:
@@ -77,4 +84,5 @@
       name: sshd
       state: restarted
 
-
+  - name: Run update-grub
+    command: update-grub
