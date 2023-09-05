@@ -33,10 +33,24 @@
 
   - name: Define lxd preseed file
     copy:
-      src: lxd-preeseed-unclustered.yml
-      dest: /tmp/lxd-preeseed-unclustered.yml
+      src: lxd-preseed-unclustered.yml
+      dest: /tmp/lxd-preseed-unclustered.yml
       mode: 0644
 
   - name: Configure lxd
-    shell: lxd init --preseed < /tmp/lxd-preeseed-unclustered.yml
+    shell: lxd init --preseed < /tmp/lxd-preseed-unclustered.yml
     changed_when: false
+
+  - name: Create controller container
+    lxd_container:
+      name: controller
+      source:
+        type: image
+        mode: pull
+        server: https://images.linuxcontainers.org
+        protocol: simplestreams
+        alias: ubuntu/22.04/cloud
+      profiles: 
+      - default
+      - controller
+
