@@ -49,8 +49,5 @@
         mode: pull
         server: https://images.linuxcontainers.org
         protocol: simplestreams
-        alias: ubuntu/22.04/cloud
-      profiles: 
-      - default
-      - controller
+        alias: debian/12
 

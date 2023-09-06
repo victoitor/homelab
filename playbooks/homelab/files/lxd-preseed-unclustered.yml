@@ -22,14 +22,3 @@ profiles:
       pool: local
       type: disk
   name: default
-- config:
-    cloud-init.user-data: |
-      #cloud-config
-      apt:
-        sources:
-          ansible:
-            source: "ppa:ansible/ansible"
-      packages:
-      - ansible
-  description: Additional controller profile
-  name: controller
