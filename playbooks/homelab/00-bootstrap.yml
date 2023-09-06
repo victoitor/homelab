@@ -19,7 +19,7 @@
       mode: 0644
     notify: sshd restart
 
-  - name: "Ensure {{  ansible_user  }} is sudoer with NOPASS: ALL"
+  - name: "{{  ansible_user  }} is sudoer with NOPASS: ALL"
     template:
       src: sudoers.j2
       dest: "/etc/sudoers.d/{{  ansible_user  }}"
@@ -34,7 +34,7 @@
     hostname: 
       name: "{{ inventory_hostname }}"
 
-  - name: Ensure bridge-utils and unattended-upgrades are installed
+  - name: bridge-utils and unattended-upgrades are installed
     apt:
       name: 
       - bridge-utils
@@ -77,7 +77,9 @@
 
   handlers:
   - name: Reboot
-    reboot:
+    command: reboot
+    async: 20
+    poll: 0
 
   - name: sshd restart
     service:
