@@ -5,9 +5,7 @@
 
   tasks:
   - name: Ensure snapd is installed
-    apt:
-      name: 
-      - snapd
+    apt: name=snapd
 
   - name: Ensure sudoers secure_path to include /snap/bin
     copy:

@@ -8,6 +8,10 @@ debian:
 ubuntu:
   hosts:
 
+lxd_servers:
+  hosts:
+    beelink4125:
+
 homelab:
   children:
     debian:

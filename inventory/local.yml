@@ -1,5 +1,5 @@
 local:
   hosts:
-    desktop:
+    localhost:
       ansible_connection: local
 

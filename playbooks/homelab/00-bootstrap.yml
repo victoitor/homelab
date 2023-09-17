@@ -1,14 +1,23 @@
 ---
 
-- hosts: homelab
+- name: Bootstrapping tasks
+  hosts: homelab
   become: true
 
+  pre_tasks:
+  - name: Update apt cache
+    apt: update_cache=yes cache_valid_time=3600
+
   tasks:
-  - name: "Sync authorized keys for user {{  ansible_user  }} with github"
-    authorized_key:
-      user: "{{  ansible_user  }}"
-      state: present
-      key: "https://github.com/{{  ansible_user  }}.keys"
+  - name: Configure timezone
+    timezone: name=America/Fortaleza
+
+  - name: Configure hostname
+    hostname: 
+      name: "{{ inventory_hostname }}"
+
+  - name: "Sync authorized keys for user {{ ansible_user }} with github"
+    authorized_key: user="{{ ansible_user }}" key="https://github.com/{{ ansible_user }}.keys"
 
   - name: Harden ssh server
     copy:
@@ -19,20 +28,13 @@
       mode: 0644
     notify: sshd restart
 
-  - name: "{{  ansible_user  }} is sudoer with NOPASS: ALL"
+  - name: "{{ ansible_user }} is sudoer with NOPASS: ALL"
     template:
       src: sudoers.j2
-      dest: "/etc/sudoers.d/{{  ansible_user  }}"
+      dest: "/etc/sudoers.d/{{ ansible_user }}"
       owner: root
       group: root
       mode: 0440
-
-  - name: Configure timezone
-    timezone: name=America/Fortaleza
-
-  - name: Configure hostname
-    hostname: 
-      name: "{{ inventory_hostname }}"
 
   - name: bridge-utils and unattended-upgrades are installed
     apt:
@@ -78,7 +80,7 @@
   handlers:
   - name: Reboot
     command: reboot
-    async: 20
+    async: 1
     poll: 0
 
   - name: sshd restart
