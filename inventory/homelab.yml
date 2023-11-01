@@ -1,9 +1,7 @@
 debian:
   hosts:
-    beelink4125:
-      ansible_host: 10.0.0.4
-      target_ip: 10.0.0.4
-      interface: enp2s0
+    bee-server:
+      ansible_host: 10.0.0.209
 
 ubuntu:
   hosts:

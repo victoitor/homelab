@@ -1,0 +1,26 @@
+- name: snapd installed
+  apt: name=snapd
+
+    #- name: sudoers secure_path includes /snap/bin
+    #  copy:
+    #    src: secure-path
+    #    dest: /etc/sudoers.d/secure-path
+    #    owner: root
+    #    group: root
+    #    mode: 0440
+
+- name: core snap installed
+  snap: name=core
+
+- name: lxd snap installed
+  snap: name=lxd channel=latest/stable
+
+- name: Configure snap refresh timer
+  command: "snap set system refresh.timer=1:00-4:00"
+  changed_when: false
+
+- name: "{{ ansible_user }} in lxd group"
+  user:
+    name: '{{ ansible_user }}'
+    groups: lxd
+    append: yes

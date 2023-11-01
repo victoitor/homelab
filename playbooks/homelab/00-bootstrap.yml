@@ -41,7 +41,6 @@
       name: 
       - bridge-utils
       - unattended-upgrades
-      update_cache: yes
 
   - name: Configure unattended-upgrades
     copy:
@@ -52,8 +51,8 @@
       mode: 0644
 
   - name: Configure bridge br0
-    template: 
-      src: br0.j2
+    copy: 
+      src: br0
       dest: /etc/network/interfaces.d/br0
       owner: root
       group: root
@@ -77,12 +76,18 @@
       line: GRUB_TIMEOUT=0
     notify: Run update-grub
 
-  handlers:
-  - name: Reboot
-    command: reboot
-    async: 1
-    poll: 0
+  - name: snapd installed
+    apt: name=snapd
 
+  - name: Set snap refresh timer
+    command: "snap set system refresh.timer=1:00-4:00"
+    changed_when: false
+
+  - name: core snap installed
+    snap: name=core
+    notify: Reboot
+
+  handlers:
   - name: sshd restart
     service:
       name: sshd
@@ -90,3 +95,9 @@
 
   - name: Run update-grub
     command: update-grub
+
+  - name: Reboot
+    command: reboot
+    async: 1
+    poll: 0
+
