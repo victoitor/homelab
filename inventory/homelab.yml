@@ -1,14 +1,14 @@
 debian:
   hosts:
     bee-server:
-      ansible_host: 10.0.0.209
+      ansible_host: 10.0.0.4
 
 ubuntu:
   hosts:
 
 lxd_servers:
   hosts:
-    beelink4125:
+    bee-server:
 
 homelab:
   children:

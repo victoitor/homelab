@@ -21,7 +21,7 @@
 
   - name: Harden ssh server
     copy:
-      src: default-ssh.conf
+      src: ssh/default-ssh.conf
       dest: /etc/ssh/sshd_config.d/default-profile.conf
       owner: root
       group: root
@@ -44,7 +44,7 @@
 
   - name: Configure unattended-upgrades
     copy:
-      src: 20auto-upgrades
+      src: unattended-upgrades/20auto-upgrades
       dest: /etc/apt/apt.conf.d/20auto-upgrades
       owner: root
       group: root
@@ -52,7 +52,7 @@
 
   - name: Configure bridge br0
     copy: 
-      src: br0
+      src: networking/br0
       dest: /etc/network/interfaces.d/br0
       owner: root
       group: root
@@ -61,7 +61,7 @@
 
   - name: Configure interfaces
     copy:
-      src: interfaces
+      src: networking/interfaces
       dest: /etc/network/interfaces
       backup: true
       owner: root
@@ -78,6 +78,14 @@
 
   - name: snapd installed
     apt: name=snapd
+
+  - name: sudoers secure_path includes /snap/bin
+    copy:
+      src: lxd/secure-path
+      dest: /etc/sudoers.d/secure-path
+      owner: root
+      group: root
+      mode: 0440
 
   - name: Set snap refresh timer
     command: "snap set system refresh.timer=1:00-4:00"

@@ -1,0 +1,41 @@
+- name: Configure servers
+  hosts: homelab
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: lxd snap installed
+    snap: name=lxd channel=latest/stable
+
+  - name: "{{ ansible_user }} in lxd group"
+    user:
+      name: '{{ ansible_user }}'
+      groups: lxd
+      append: yes
+
+  - name: Define lxd preseed file
+    copy:
+      src: lxd/lxd-preseed-unclustered.yml
+      dest: /tmp/lxd-preseed-unclustered.yml
+      mode: 0644
+
+  - name: Configure lxd
+    shell: lxd init --preseed < /tmp/lxd-preseed-unclustered.yml
+    changed_when: false
+
+  - name: docker created
+    lxd_container:
+      name: bee-docker
+      source:
+        type: image
+        mode: pull
+        server: https://images.linuxcontainers.org
+        protocol: simplestreams
+        alias: debian/12
+      profiles:
+      - default
+      - docker
+      wait_for_container: true
+      timeout: 600
+
+

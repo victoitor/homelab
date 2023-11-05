@@ -1,0 +1,9 @@
+services:
+  hosts:
+    bee-docker:
+    controller:
+  vars:
+    ansible_connection: lxd
+    ansible_user: root
+    ansible_lxd_remote: bee-server
+    ansible_lxd_project: default

@@ -22,3 +22,22 @@ profiles:
       pool: local
       type: disk
   name: default
+- config:
+    security.nesting: "true"
+  description: additional controller profile
+  devices:
+    eth0:
+  name: controller
+- config:
+    limits.memory: 4GiB
+    security.nesting: "true"
+  description: additional docker profile
+  devices:
+    eth0:
+      name: eth0
+      nictype: bridged
+      parent: br0
+      hwaddr: 00:16:3e:1d:26:d2
+      type: nic
+  name: docker
+
