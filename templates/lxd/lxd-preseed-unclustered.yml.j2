@@ -23,16 +23,14 @@ profiles:
       type: disk
   name: default
 - config:
-    security.nesting: "true"
-  description: additional controller profile
-  devices:
-    eth0:
-  name: controller
-- config:
+    limits.cpu.allowance: 400%
     limits.memory: 4GiB
     security.nesting: "true"
   description: additional docker profile
   devices:
+    gpu:
+      gid: "{{ render_id }}"
+      type: gpu
     eth0:
       name: eth0
       nictype: bridged

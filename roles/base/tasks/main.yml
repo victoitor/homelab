@@ -1,0 +1,19 @@
+---
+- name: Configure timezone
+  timezone: name=America/Fortaleza
+
+- name: Configure hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: "Sync authorized keys for user {{ ansible_user }} with github"
+  authorized_key: user="{{ ansible_user }}" key="https://github.com/{{ ansible_user }}.keys"
+
+- name: "{{ ansible_user }} is sudoer with NOPASS: ALL"
+  template:
+    src: sudoers.j2
+    dest: "/etc/sudoers.d/{{ ansible_user }}"
+    owner: root
+    group: root
+    mode: 0440
+

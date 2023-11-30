@@ -1,7 +1,6 @@
 services:
   hosts:
     bee-docker:
-    controller:
   vars:
     ansible_connection: lxd
     ansible_user: root

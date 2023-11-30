@@ -1,0 +1,11 @@
+---
+- name: Harden ssh server
+  copy:
+    src: default-ssh.conf
+    dest: /etc/ssh/sshd_config.d/default-profile.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: "ssh : sshd restart"
+
+

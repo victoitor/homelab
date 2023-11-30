@@ -1,0 +1,20 @@
+---
+- name: zram-tools is installed
+  apt:
+    name:
+    - zram-tools
+
+- name: zram set lz4 algorithm
+  lineinfile:
+    path: /etc/default/zramswap
+    regexp: '^#ALGO='
+    line: ALGO=lz4
+  notify: "zram : zramswap restart"
+
+- name: zram set size to 50 percent
+  lineinfile:
+    path: /etc/default/zramswap
+    regexp: '^#PERCENT='
+    line: PERCENT=50
+  notify: "zram : zramswap restart"
+

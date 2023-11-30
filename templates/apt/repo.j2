@@ -1,0 +1,9 @@
+X-Repolib-Name: {{ repo_name }}
+Types: deb
+URIs: {{ repo_uris }}
+Suites: {{ repo_suites }}
+{% if repo_components is defined %}
+Components: {{ repo_components }}
+{% endif %}
+Signed-By: {{ repo_signed_by }}
+

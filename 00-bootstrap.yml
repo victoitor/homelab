@@ -8,35 +8,13 @@
   - name: Update apt cache
     apt: update_cache=yes cache_valid_time=3600
 
+  roles:
+  - base
+  - ssh 
+  - zram
+
   tasks:
-  - name: Configure timezone
-    timezone: name=America/Fortaleza
-
-  - name: Configure hostname
-    hostname: 
-      name: "{{ inventory_hostname }}"
-
-  - name: "Sync authorized keys for user {{ ansible_user }} with github"
-    authorized_key: user="{{ ansible_user }}" key="https://github.com/{{ ansible_user }}.keys"
-
-  - name: Harden ssh server
-    copy:
-      src: ssh/default-ssh.conf
-      dest: /etc/ssh/sshd_config.d/default-profile.conf
-      owner: root
-      group: root
-      mode: 0644
-    notify: sshd restart
-
-  - name: "{{ ansible_user }} is sudoer with NOPASS: ALL"
-    template:
-      src: sudoers.j2
-      dest: "/etc/sudoers.d/{{ ansible_user }}"
-      owner: root
-      group: root
-      mode: 0440
-
-  - name: bridge-utils and unattended-upgrades are installed
+  - name: bridge-utils and unattended-upgrades packages are installed
     apt:
       name: 
       - bridge-utils
@@ -93,14 +71,10 @@
 
   - name: core snap installed
     snap: name=core
+    ignore_errors: true
     notify: Reboot
 
   handlers:
-  - name: sshd restart
-    service:
-      name: sshd
-      state: restarted
-
   - name: Run update-grub
     command: update-grub
 

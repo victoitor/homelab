@@ -2,6 +2,7 @@ debian:
   hosts:
     bee-server:
       ansible_host: 10.0.0.4
+      render_id: 105
 
 ubuntu:
   hosts:

@@ -1,7 +1,14 @@
+- name: Gather localhost facts
+  hosts: localhost
+
+  tasks:
+  - name: Set local machine identifier
+    set_fact:
+      local_identifier: "{{ ansible_facts['user_id'] }}@{{ ansible_facts['nodename'] }}"
+
 - name: Configure servers
   hosts: homelab
   become: true
-  gather_facts: false
 
   tasks:
   - name: lxd snap installed
@@ -14,8 +21,8 @@
       append: yes
 
   - name: Define lxd preseed file
-    copy:
-      src: lxd/lxd-preseed-unclustered.yml
+    template:
+      src: lxd/lxd-preseed-unclustered.yml.j2
       dest: /tmp/lxd-preseed-unclustered.yml
       mode: 0644
 
@@ -23,7 +30,28 @@
     shell: lxd init --preseed < /tmp/lxd-preseed-unclustered.yml
     changed_when: false
 
-  - name: docker created
+  - name: Get lxd trust list
+    command: lxc config trust list -f yaml
+    register: trust_list
+    changed_when: false
+
+  - name: Get trusted client names
+    set_fact:
+      trust_client_names: "{{ trust_list.stdout | from_yaml | selectattr('type', '==', 'client') | map(attribute='name') }}"
+
+  - name: Add remote to local machine
+    when: hostvars['localhost']['local_identifier'] not in trust_client_names
+    block:
+    - name: Add lxd trusted client
+      command: "lxc config trust add --name {{ hostvars['localhost']['local_identifier'] }}"
+      register: trust_add_output
+
+    - name: Add local remote
+      become: false
+      delegate_to: localhost
+      command: "lxc remote add {{ ansible_facts['nodename'] }} {{ trust_add_output.stdout_lines[1] }}"
+
+  - name: bee-docker created
     lxd_container:
       name: bee-docker
       source:
@@ -31,11 +59,79 @@
         mode: pull
         server: https://images.linuxcontainers.org
         protocol: simplestreams
-        alias: debian/12
+        alias: ubuntu/22.04/cloud
       profiles:
       - default
       - docker
       wait_for_container: true
       timeout: 600
 
+- name: Configure bee-docker
+  hosts: bee-docker
 
+  tasks:
+
+#  - name: Add repo using key from URL
+#    deb822_repository:
+#      name: docker
+#      types: deb
+#      uris: "https://download.docker.com/linux/{{ ansible_distribution | lower }}"
+#      suites: "{{ ansible_distribution_release }}"
+#      components: stable
+#      architectures: "{{ ansible_architecture }}"
+#      signed_by: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+#
+  - name: Add docker GPG key
+    get_url:
+      url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+      dest: /etc/apt/keyrings/docker.asc
+      mode: '0644'
+      force: true
+
+  - name: Add Docker repo
+    template:
+      src: apt/repo.j2
+      dest: /etc/apt/sources.list.d/docker.sources
+      mode: '0644'
+    vars:
+      repo_name: Docker PPA
+      repo_uris: "https://download.docker.com/linux/{{ ansible_distribution | lower }}"
+      repo_suites: "{{ ansible_distribution_release }}"
+      repo_components: stable
+      repo_signed_by: "/etc/apt/keyrings/docker.asc"
+
+  - name: dependencies updated
+    apt:
+      name:
+      - intel-media-va-driver-non-free
+      - intel-opencl-icd
+      - docker-ce 
+      - docker-compose-plugin
+#      - ca-certificates 
+#      - curl
+#      - gnupg
+      state: latest
+      update_cache: true
+#
+#  - name: Add signing key
+#    apt_key:
+#      url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+#      state: present
+#
+#  - name: Add repository into sources list
+#    apt_repository:
+#      repo: "deb [arch={{ ansible_architecture }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+#      state: present
+#      filename: docker
+#
+#  - name: Install Docker
+#    apt:
+#      name:
+#        - docker
+#        - docker.io
+#        - docker-compose
+#        - docker-registry
+#      state: latest
+#      update_cache: true
+
+        #docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
