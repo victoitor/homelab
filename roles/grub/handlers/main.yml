@@ -1,0 +1,3 @@
+---
+- name: Run update-grub
+  command: update-grub

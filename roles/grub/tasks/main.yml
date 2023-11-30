@@ -1,0 +1,7 @@
+---
+- name: Configure GRUB_TIMEOUT
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_TIMEOUT='
+    line: GRUB_TIMEOUT=0
+  notify: "grub : Run update-grub"

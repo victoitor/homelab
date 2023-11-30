@@ -1,0 +1,6 @@
+---
+- name: Reboot
+  command: reboot
+  async: 1
+  poll: 0
+

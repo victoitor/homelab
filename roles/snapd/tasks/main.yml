@@ -1,0 +1,11 @@
+---
+- name: snapd installed
+  apt: name=snapd
+
+- name: Set snap refresh timer
+  command: "snap set system refresh.timer=1:00-4:00"
+  changed_when: false
+
+- name: core snap installed
+  snap: name=core
+  ignore_errors: true
