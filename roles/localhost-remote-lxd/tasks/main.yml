@@ -1,0 +1,29 @@
+---
+- name: Gather localhost facts
+  become: false
+  delegate_to: localhost
+  delegate_facts: true
+  gather_facts:
+  run_once: true
+
+- name: Set local machine identifier
+  set_fact:
+    local_identifier: "{{ hostvars['localhost'].ansible_env.LOGNAME }}@{{ hostvars['localhost'].ansible_facts.hostname }}"
+  run_once: true
+
+- name: Get lxd trust list
+  command: lxc config trust list -f yaml
+  register: trust_list
+  changed_when: false
+
+- name: Add remote to local machine
+  when: local_identifier not in (trust_list.stdout | from_yaml | selectattr('type', '==', 'client') | map(attribute='name'))
+  block:
+  - name: Add lxd trusted client
+    command: "lxc config trust add --name {{ local_identifier }}"
+    register: trust_add_output
+
+  - name: Add local remote
+    become: false
+    delegate_to: localhost
+    command: "lxc remote add {{ ansible_facts['nodename'] }} {{ trust_add_output.stdout_lines[1] }}"

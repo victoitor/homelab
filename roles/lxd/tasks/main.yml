@@ -1,11 +1,29 @@
 - name: lxd snap installed
   snap: name=lxd channel=latest/stable
+  ignore_errors: true
 
 - name: "{{ ansible_user }} in lxd group"
   user:
     name: '{{ ansible_user }}'
     groups: lxd
     append: yes
+
+- name: Get ui enabled config
+  command: snap get lxd ui.enable
+  register: lxd_ui_enable
+  changed_when: false
+  ignore_errors: true
+
+- name: Enable lxd-ui
+  when: lxd_ui_enable.stdout is not eq("true")
+  block:
+  - name: enable
+    command: snap set lxd ui.enable=true
+
+  - name: snap.lxd.daemon restart
+    service:
+      name: snap.lxd.daemon
+      state: restarted
 
 - name: Define lxd preseed file
   template:
@@ -16,5 +34,3 @@
 - name: Configure lxd
   shell: lxd init --preseed < /tmp/lxd-preseed-unclustered.yml
   changed_when: false
-
-

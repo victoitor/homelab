@@ -1,7 +1,4 @@
 ---
-- name: Configure timezone
-  timezone: name=America/Fortaleza
-
 - name: Configure hostname
   hostname:
     name: "{{ inventory_hostname }}"

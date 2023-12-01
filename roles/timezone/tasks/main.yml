@@ -1,0 +1,3 @@
+---
+- name: Configure timezone
+  timezone: name=America/Fortaleza
