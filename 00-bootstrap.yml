@@ -16,4 +16,5 @@
   - grub
   - unattended-upgrades
   - snapd
+  - intel-igpu
   - bridge

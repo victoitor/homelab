@@ -45,6 +45,7 @@
       - default
       - docker
       - mnt-appdata
+      - mnt-media
       wait_for_container: true
       timeout: 600
 

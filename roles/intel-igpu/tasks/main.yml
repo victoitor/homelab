@@ -1,0 +1,20 @@
+---
+- name: intel drivers installed
+  apt:
+    name:
+    - firmware-linux-nonfree
+    - intel-media-va-driver
+    - intel-opencl-icd
+    state: latest
+    update_cache: true
+
+- name: GuC and HuC firmware enabled
+  copy:
+    src: i915.conf
+    dest: /etc/modprobe.d/i915.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: initramfs-grub-update
+
+
