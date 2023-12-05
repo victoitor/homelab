@@ -4,3 +4,7 @@
 
 - name: run update-grub
   command: update-grub
+
+- name: Output reboot message
+  debug:
+    msg: "Rebooting is necessry to update kernel modules"
