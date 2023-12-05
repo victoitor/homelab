@@ -10,7 +10,7 @@ Esta configuração assume que foi instalado um servidor debian 12. Uma vez que 
 
 
 ```bash
-ansible-playbook playbooks/00-bootstrap-homelab.yml --ask-become-pass
+ansible-playbook playbooks/00-bootstrap-homelab.yml --ask-pass --ask-become-pass
 ```
 
 Para as execuções posteriores, é necessário trocar a variável `ansible_host` para o mesmo valor que `target_ip` no arquivo `hosts/homelab.yml`.
