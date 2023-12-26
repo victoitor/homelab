@@ -1,0 +1,14 @@
+- name: add repository
+  deb822_repository:
+    name: incus
+    types: deb
+    uris: https://pkgs.zabbly.com/incus/stable
+    suites: bookworm
+    components: main
+    architectures: amd64
+    signed_by: https://pkgs.zabbly.com/key.asc
+    
+- name: install
+  apt:
+    state: latest
+    name: incus
