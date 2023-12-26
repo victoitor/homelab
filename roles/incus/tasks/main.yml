@@ -12,3 +12,9 @@
   apt:
     state: latest
     name: incus
+
+- name: enable and start
+  service:
+    name: incus
+    state: started
+    enabled: true
