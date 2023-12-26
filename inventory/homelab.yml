@@ -17,4 +17,4 @@ homelab:
     ubuntu:
   vars:
     ansible_user: victoitor
-    ansible_ssh_private_key_file: /home/victoitor/MEGA/ssh-keys/victoitor
+    ansible_ssh_private_key_file: /root/.ssh/victoitor
