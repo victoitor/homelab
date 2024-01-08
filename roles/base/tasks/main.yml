@@ -14,3 +14,9 @@
     group: root
     mode: 0440
 
+- name: base packages installed
+  apt:
+    name:
+    - cockpit
+    - lm-sensors
+    - smartmontools
