@@ -16,5 +16,6 @@
   - grub
   - unattended-upgrades
   - intel-igpu
+  - incus
   - bridge
   - incus
