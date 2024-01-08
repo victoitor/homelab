@@ -11,10 +11,13 @@
 - name: install
   apt:
     state: latest
-    name: incus
+    name: 
+    - incus
+    - incus-ui-canonical
+    update_cache: true
 
-- name: enable and start
-  service:
-    name: incus
-    state: started
-    enabled: true
+- name: "{{ ansible_user }} in incus-admin group"
+  user:
+    name: "{{ ansible_user }}"
+    groups: incus-admin
+    append: true

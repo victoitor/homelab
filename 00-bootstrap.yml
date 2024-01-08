@@ -17,3 +17,4 @@
   - unattended-upgrades
   - intel-igpu
   - bridge
+  - incus
