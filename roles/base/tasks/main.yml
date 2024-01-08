@@ -20,3 +20,4 @@
     - cockpit
     - lm-sensors
     - smartmontools
+    - linux-cpupower

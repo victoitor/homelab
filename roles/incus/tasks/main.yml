@@ -11,10 +11,8 @@
 - name: install
   apt:
     state: latest
-    name: incus
+    update_cache: true
+    name: 
+    - incus
+    - incus-ui-canonical
 
-- name: enable and start
-  service:
-    name: incus
-    state: started
-    enabled: true
