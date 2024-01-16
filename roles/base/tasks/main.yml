@@ -21,3 +21,4 @@
     - lm-sensors
     - smartmontools
     - linux-cpupower
+    - tmux
