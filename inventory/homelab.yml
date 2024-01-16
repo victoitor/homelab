@@ -1,18 +1,19 @@
 debian:
   hosts:
-    bee-server:
-      ansible_host: 10.0.0.4
-      render_id: 105
+#    bee-server:
+#      ansible_host: 10.0.0.4
+#      render_id: 105
     router-server:
-      ansible_host: 10.0.0.237
+      ansible_host: 192.168.0.8
       render_id: 105
 
 ubuntu:
   hosts:
 
-lxd_servers:
+incus_servers:
   hosts:
-    bee-server:
+#    bee-server:
+    router-server
 
 homelab:
   children:

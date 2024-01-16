@@ -14,8 +14,6 @@
   - ssh 
   - zram
   - grub
-  - unattended-upgrades
   - intel-igpu
   - incus
   - bridge
-  - incus
