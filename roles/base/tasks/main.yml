@@ -14,7 +14,7 @@
     group: root
     mode: 0440
 
-- name: base packages installed
+- name: install packages
   apt:
     name:
     - cockpit
@@ -22,3 +22,12 @@
     - smartmontools
     - linux-cpupower
     - tmux
+    - vim
+
+- name: remove packages
+  apt:
+    state: absent
+    name:
+    - vim-tiny
+
+
