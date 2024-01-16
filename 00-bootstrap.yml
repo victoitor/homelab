@@ -16,4 +16,4 @@
   - grub
   - intel-igpu
   - incus
-  - bridge
+#  - bridge
