@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Esse repositório contém instruções ansible com as configurações padrões dos servidores no meu homelab. Por padrão, estes servidores rodarão containers lxd.
+Esse repositório contém instruções ansible com as configurações padrões dos servidores no meu homelab. Por padrão, estes servidores rodarão containers incus.
 
 ## Utilização
 
