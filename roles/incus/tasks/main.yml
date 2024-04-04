@@ -10,11 +10,19 @@
     
 - name: install
   apt:
-    state: latest
+    state: present
     name: 
     - incus
     - incus-ui-canonical
     update_cache: true
+
+- name: hold incus and incus-ui-canonical
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop:
+  - incus
+  - incus-ui-canonical
 
 - name: "{{ ansible_user }} in incus-admin group"
   user:
